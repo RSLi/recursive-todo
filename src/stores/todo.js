@@ -29,33 +29,35 @@ class TodoList {
         this.items = items || [];
     }
 
+    // TODO: rewrite this part.
     // This is an inefficient helper function that removes all dangling todos.
-    removeOrphanedTodo(items) {
-        let hasOrphan = false;
-        let filteredItems = [...items];
-        for (todo of items) {
-            // For each non-root todo item whose parent cannot be found.
-            if (todo.parent && items.filter(t => t.id === todo.parent).length === 0) {
-                hasOrphan = true;
-                filteredItems = filteredItems.filter(t => t.id !== todo.id);
-            }
-        }
+    // removeOrphanedTodo(itemList) {
+    //     let hasOrphan = false;
+    //     let filteredItems = [...itemList];
+    //     for (todo of itemList) {
+    //         // For each non-root todo item whose parent cannot be found.
+    //         if (todo.parent && itemList.filter(t => t.id === todo.parent).length === 0) {
+    //             hasOrphan = true;
+    //             filteredItems = filteredItems.filter(t => t.id !== todo.id);
+    //         }
+    //     }
 
-        // Recursively run again until no dangling todo.
-        if (hasOrphan) {
-            return this.removeOrphanedTodo(filteredItems);
-        }
+    //     // Recursively run again until no dangling todo.
+    //     if (hasOrphan) {
+    //         return this.removeOrphanedTodo(filteredItems);
+    //     }
 
-        return filteredItems;
-    }
+    //     return filteredItems;
+    // }
 
     addTodo(todoObject) {
-        return new TodoList([todoObject, ...this.items]);
+        return new TodoList([...this.items, todoObject]);
     }
 
     removeTodo(todoObject) {
-        const newItems = this.items.filter(todo => todo.id != todoObject.id);
-        return new TodoList(this.removeOrphanedTodo(newItems));
+        const newItems = this.items.filter(todo => todo.id !== todoObject.id);
+        // return new TodoList(this.removeOrphanedTodo(newItems));
+        return new TodoList(newItems);
     }
 
     completeTodo(todoObject) {
