@@ -5,6 +5,7 @@
     export let todo;
 
     let mode = 'VIEW'; // mode can be 'VIEW' or 'EDIT'
+    let editTextAreaValue = '';
 
     $: barColor = todo.isCompleted ? 'gray' : 'purple';
 
@@ -23,6 +24,10 @@
         } else {
             todoListStore.completeTodo(todo);
         }
+    }
+
+    function handleUpdateTitle(newTitle) {
+        todoListStore.updateTitle(todo, newTitle);
     }
 
 </script>
@@ -98,16 +103,25 @@
         </div>
         <div class="todoitem__rightbar">
             <button on:click={handleSelection}>⇨</button>
-            <button on:click={() => {mode = 'EDIT'}}>✐</button>
+            <button
+                on:click={() => {
+                    editTextAreaValue = todo.title;
+                    mode = 'EDIT';
+                }}
+            >✐</button>
             <button on:click={handleDelete}>⨯</button>
         </div>
     {/if}
     {#if mode === 'EDIT'}
         <div class="todoitem__body">
-            {todo.title}
+            <textarea bind:value={editTextAreaValue}></textarea>
         </div>
         <div class="todoitem__rightbar">
-            <button on:click={() => {mode = 'VIEW'}}>✔</button>
+            <button on:click={() => {
+                    handleUpdateTitle(editTextAreaValue);
+                    mode = 'VIEW';
+                }}
+            >✔</button>
         </div>
     {/if}
 </div>

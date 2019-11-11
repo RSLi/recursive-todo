@@ -12,6 +12,14 @@ class Todo {
         this.isCompleted = false;
     }
 
+    static fromJson(json) {
+        const todo = new Todo(json.title);
+        todo.id = json.id;
+        todo.parent = json.parent;
+        todo.isCompleted = json.isCompleted;
+        return todo;
+    }
+
     updateTitle(newTitle) {
         this.title = newTitle;
         return this;
@@ -114,7 +122,9 @@ function createTodoListStore() {
         loadFromLocalStorageIfAvailable: () => {
             const savedData = window.localStorage.getItem('recursive-todo-save');
             if (savedData) {
-                set(new TodoList(JSON.parse(savedData)));
+                const jsonItems = JSON.parse(savedData);
+                const todoItems = jsonItems.map(item => Todo.fromJson(item));
+                set(new TodoList(todoItems));
             } else {
                 console.log('No save found.');
             }
