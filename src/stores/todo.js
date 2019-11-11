@@ -2,7 +2,7 @@ import { writable } from 'svelte/store';
 import uuidv4 from 'uuid/v4';
 
 /**
- * Immutable Todo object.
+ * Todo object
  */
 class Todo {
     constructor(title, parent) {
@@ -12,10 +12,14 @@ class Todo {
         this.isCompleted = false;
     }
 
+    updateTitle(newTitle) {
+        this.title = newTitle;
+        return this;
+    }
+
     complete() {
-        const newTodo = new Todo(this.title, this.parent);
-        newTodo.isCompleted = true;
-        return newTodo;
+        this.isCompleted = true;
+        return this;
     }
 }
 
@@ -29,46 +33,47 @@ class TodoList {
         this.items = items || [];
     }
 
-    // TODO: rewrite this part.
-    // This is an inefficient helper function that removes all dangling todos.
-    // removeOrphanedTodo(itemList) {
-    //     let hasOrphan = false;
-    //     let filteredItems = [...itemList];
-    //     for (todo of itemList) {
-    //         // For each non-root todo item whose parent cannot be found.
-    //         if (todo.parent && itemList.filter(t => t.id === todo.parent).length === 0) {
-    //             hasOrphan = true;
-    //             filteredItems = filteredItems.filter(t => t.id !== todo.id);
-    //         }
-    //     }
-
-    //     // Recursively run again until no dangling todo.
-    //     if (hasOrphan) {
-    //         return this.removeOrphanedTodo(filteredItems);
-    //     }
-
-    //     return filteredItems;
-    // }
-
     addTodo(todoObject) {
         return new TodoList([...this.items, todoObject]);
     }
 
     removeTodo(todoObject) {
         const newItems = this.items.filter(todo => todo.id !== todoObject.id);
-        // return new TodoList(this.removeOrphanedTodo(newItems));
+        // TODO: return new TodoList(this.removeOrphanedTodo(newItems));
         return new TodoList(newItems);
     }
 
     completeTodo(todoObject) {
         const newItems = this.items.map(todo => {
             if (todo.id === todoObject.id) {
-                return todoObject.complete();
+                return todo.complete();
             }
 
             return todo;
         });
         return new TodoList(newItems);
+    }
+
+    undoCompleteTodo(todoObject) {
+        const newItems = this.items.map(todo => {
+            if (todo.id === todoObject.id) {
+                todo.isCompleted = false;
+                return todo;
+            }
+
+            return todo;
+        });
+        return new TodoList(newItems);
+    }
+
+    updateTitle(todoObject, newTitle) {
+        return new TodoList(this.items.map(todo => {
+            if (todo.id === todoObject.id) {
+                return todo.updateTitle(newTitle);
+            }
+
+            return todo;
+        }));
     }
 }
 
@@ -86,6 +91,12 @@ function createTodoListStore() {
         },
         completeTodo: (todoObject) => {
             update(current => current.completeTodo(todoObject));
+        },
+        undoCompleteTodo: (todoObject) => {
+            update(current => current.undoCompleteTodo(todoObject));
+        },
+        updateTitle: (todoObject, newTitle) => {
+            update(current => current.updateTitle(todoObject, newTitle));
         },
         clear: () => set(new TodoList()),
     };

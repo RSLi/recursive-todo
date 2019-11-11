@@ -49,9 +49,21 @@
 	border-radius: 20px;
 	box-shadow: 0px 10px 16px -6px rgba(0,0,0,0.75);
 }
-.form {
+
+.column__header {
+	margin: 30px 20px 30px 20px;
+}
+
+.column__header form {
 	width: 100%;
 }
+
+.column__header button {
+	padding: 5px 5px 5px 5px;
+	background-color: coral;
+	color: white;
+}
+
 input {
 	width: 100%;
 }
@@ -60,16 +72,20 @@ input {
 <div class="container">
 	{#if $selectedTodo}
 		<div class="column">
-			<button on:click={handleDelete}>Delete</button>
+			<!-- <button on:click={handleDelete}>Delete</button> -->
 			<TodoItem todo={$selectedTodo} />
 		</div>
 	{/if}
 
 	<div class="column">
-		<button on:click={handleBack}>Back to top</button>
-		<form class="form" on:submit|preventDefault={handleSubmit}>
-			<input bind:value={$newTodoInput}>
-		</form>
+		<div class="column__header">
+			{#if $selectedTodo}
+				<button on:click={handleBack}>Back to top</button>
+			{/if}
+			<form on:submit|preventDefault={handleSubmit}>
+				<input bind:value={$newTodoInput} placeholder="Input todo and press enter">
+			</form>
+		</div>
 
 		{#each itemsInView as todo (todo.id)}
 			<TodoItem todo={todo} />
