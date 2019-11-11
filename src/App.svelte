@@ -40,7 +40,7 @@
     align-items: center;
     width: 100vw;
     height: 100vh;
-    background: pink;
+	background: pink;
 }
 .column {
 	width: 400px;
@@ -48,6 +48,7 @@
 	background: white;
 	border-radius: 20px;
 	box-shadow: 0px 10px 16px -6px rgba(0,0,0,0.75);
+	overflow-y: auto;
 }
 
 .column__header {
