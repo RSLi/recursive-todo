@@ -41,7 +41,8 @@
     align-items: center;
     width: 100vw;
     height: 100vh;
-	background: pink;
+	background: rgb(34,193,195);
+	background: linear-gradient(149deg, rgba(34,193,195,1) 0%, rgba(253,45,182,1) 100%);
 }
 .column {
 	width: 400px;
