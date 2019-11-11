@@ -4,6 +4,7 @@
 	import { todoListStore } from './stores/todo.js';
 	import { newTodoInput, selectedTodo } from './stores/ui.js';
 	import TodoItem from './components/TodoItem.svelte';
+	import GithubCorner from './components/GithubCorner.svelte';
 
 
 	function handleDelete() {
@@ -69,6 +70,8 @@ input {
 	width: 100%;
 }
 </style>
+
+<GithubCorner></GithubCorner>
 
 <div class="container">
 	{#if $selectedTodo}
