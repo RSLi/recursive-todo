@@ -33,13 +33,20 @@ class TodoList {
         this.items = items || [];
     }
 
+    saveToLocalStorage(items) {
+        window.localStorage.setItem('recursive-todo-save', JSON.stringify(items));
+    }
+
     addTodo(todoObject) {
-        return new TodoList([...this.items, todoObject]);
+        const newItems = [...this.items, todoObject];
+        this.saveToLocalStorage(newItems);
+        return new TodoList(newItems);
     }
 
     removeTodo(todoObject) {
         const newItems = this.items.filter(todo => todo.id !== todoObject.id);
         // TODO: return new TodoList(this.removeOrphanedTodo(newItems));
+        this.saveToLocalStorage(newItems);
         return new TodoList(newItems);
     }
 
@@ -51,6 +58,7 @@ class TodoList {
 
             return todo;
         });
+        this.saveToLocalStorage(newItems);
         return new TodoList(newItems);
     }
 
@@ -63,17 +71,20 @@ class TodoList {
 
             return todo;
         });
+        this.saveToLocalStorage(newItems);
         return new TodoList(newItems);
     }
 
     updateTitle(todoObject, newTitle) {
-        return new TodoList(this.items.map(todo => {
+        const newItems = this.items.map(todo => {
             if (todo.id === todoObject.id) {
                 return todo.updateTitle(newTitle);
             }
 
             return todo;
-        }));
+        });
+        this.saveToLocalStorage(newItems);
+        return new TodoList(newItems);
     }
 }
 
@@ -83,6 +94,8 @@ function createTodoListStore() {
 
     return {
         subscribe,
+        update,
+        set,
         addTodo: (title, parent) => {
             update(current => current.addTodo(new Todo(title, parent)));
         },
@@ -97,6 +110,14 @@ function createTodoListStore() {
         },
         updateTitle: (todoObject, newTitle) => {
             update(current => current.updateTitle(todoObject, newTitle));
+        },
+        loadFromLocalStorageIfAvailable: () => {
+            const savedData = window.localStorage.getItem('recursive-todo-save');
+            if (savedData) {
+                set(new TodoList(JSON.parse(savedData)));
+            } else {
+                console.log('No save found.');
+            }
         },
         clear: () => set(new TodoList()),
     };
