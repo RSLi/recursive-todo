@@ -6,6 +6,9 @@ Break down your todo list items into smaller and smaller items so you can start 
 
 Currently designed for desktop users. PR welcome if you can make this mobile-friendly.
 
+![Screenshot 1](pic1.jpg)
+![Screenshot 2](pic2.jpg)
+![Screenshot 3](pic3.jpg)
 ---
 
 ## Development
